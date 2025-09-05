@@ -1,5 +1,6 @@
 import re
-from pydantic import BaseModel, field_validator
+
+from pydantic import BaseModel, field_validator, RootModel
 
 from app.api.exceptions import CustomException
 
@@ -45,9 +46,33 @@ class UserIdResponseSchema(BaseModel):
     id: int
 
 
-class UserUpdateSchema(UserCreateSchema):
+class UserUpdateSchema(BaseModel):
     email: str | None = None
     password: str | None = None
     name: str | None = None
     surname: str | None = None
     is_admin: bool | None = None
+
+
+class UserWalletSchema(BaseModel):
+    id: int
+    balance: float
+    user_id: int
+
+
+class UserWalletsSchema(BaseModel):
+    id: int
+    email: str
+    password: str
+    name: str
+    surname: str
+    is_admin: bool
+    wallets: list[UserWalletSchema]
+
+
+class UserItemSchema(BaseModel):
+    User: UserWalletsSchema
+
+
+class UserListSchema(RootModel):
+    root: list[UserItemSchema]

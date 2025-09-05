@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, NullPool
+from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
 
