@@ -23,7 +23,9 @@ class WalletService(AbstractWallet):
             wallets = await wallet_repo.get_list(user_id)
 
         result = [
-            WalletModelSchema(Wallet=WalletDataSchema(id=row.id, balance=row.balance)) for row in wallets
+            WalletModelSchema(
+                Wallet=WalletDataSchema(id=wallet.id, balance=wallet.balance, account_id=wallet.account_id)
+            ) for wallet in wallets
         ]
         return result
 

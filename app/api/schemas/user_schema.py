@@ -58,6 +58,7 @@ class UserWalletSchema(BaseModel):
     id: int
     balance: float
     user_id: int
+    account_id: int
 
 
 class UserWalletsSchema(BaseModel):

@@ -59,22 +59,27 @@ class PaymentService(AbstractPaymentService):
                 wallet_repo = self.wallet_repository_factory(session)
                 payment_repo = self.payment_repository_factory(session)
 
-                wallet = await wallet_repo.get_one(account_id)
+                wallet = await wallet_repo.get_one(account_id, user_id)
                 wallet = wallet.scalar()
 
                 if not wallet:
-                    wallet = await wallet_repo.create_one(user_id)
-                    await session.flush()
+                    wallet = await wallet_repo.create_one(account_id, user_id)
 
                 await payment_repo.create_one(amount, tr_id, user_id)
 
                 wallet.balance += amount
+
                 await session.commit()
 
-            except IntegrityError:
+            except IntegrityError as e:
+                detail = "Payment has already been processed"
+
+                if "wallet" in str(e.orig):
+                    detail = f"Wallet with id {account_id} has already been exists for another user"
+
                 raise CustomException(
                     status_code=400,
-                    detail="Payment has already been processed",
+                    detail=detail,
                     message="Failed to process payment"
                 )
             except Exception:

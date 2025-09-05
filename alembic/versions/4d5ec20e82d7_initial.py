@@ -1,8 +1,8 @@
-"""initial migration
+"""initial
 
-Revision ID: c80b562daf75
+Revision ID: 4d5ec20e82d7
 Revises: 
-Create Date: 2025-09-03 01:04:26.059055
+Create Date: 2025-09-06 00:28:46.586267
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from app.utils.create_test_users import create_test_data
 
 # revision identifiers, used by Alembic.
-revision: str = 'c80b562daf75'
+revision: str = '4d5ec20e82d7'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -45,8 +45,10 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('balance', sa.Float(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('account_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('account_id')
     )
 
     create_test_data(op)

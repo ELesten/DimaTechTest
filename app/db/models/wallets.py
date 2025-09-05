@@ -9,6 +9,7 @@ class Wallet(Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     balance: Mapped[float] = mapped_column(default=0)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    account_id: Mapped[int] = mapped_column(unique=True)
 
 
 __all__ = ['Wallet']

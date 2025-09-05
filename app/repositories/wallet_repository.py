@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy import select, Result
+from sqlalchemy import select, Result, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import InstrumentedAttribute
 
@@ -14,11 +14,11 @@ class AbstractWalletRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_one(self, account_id):
+    async def get_one(self, account_id, user_id):
         pass
 
     @abstractmethod
-    async def create_one(self, user_id):
+    async def create_one(self, account_id, user_id):
         pass
 
 
@@ -28,15 +28,15 @@ class WalletRepository(AbstractWalletRepository):
         self.session = session
 
     async def get_list(self, user_id: InstrumentedAttribute[int]) -> Result:
-        stmt = select(Wallet.id, Wallet.balance).where(Wallet.user_id == user_id)
+        stmt = select(Wallet.id, Wallet.balance, Wallet.account_id).where(Wallet.user_id == user_id)
         return await self.session.execute(stmt)
 
-    async def get_one(self, account_id: int) -> Result:
-        stmt = select(Wallet).where(Wallet.id == account_id)
+    async def get_one(self, account_id: int, user_id: int) -> Result:
+        stmt = select(Wallet).where(and_(Wallet.id == account_id, Wallet.user_id == user_id))
         return await self.session.execute(stmt)
 
-    async def create_one(self, user_id: int) -> Wallet:
-        wallet = Wallet(user_id=user_id)
+    async def create_one(self, account_id: int, user_id: int) -> Wallet:
+        wallet = Wallet(user_id=user_id, balance=0, account_id=account_id)
         self.session.add(wallet)
         return wallet
 

@@ -37,11 +37,12 @@ def create_test_data(op):
 
     connection.execute(
         text("""
-            INSERT INTO wallets (balance, user_id)
-            VALUES (:balance, :user_id)
+            INSERT INTO wallets (balance, user_id, account_id)
+            VALUES (:balance, :user_id, :account_id)
         """),
         {
             "balance": 0,
-            "user_id": 2
+            "user_id": 2,
+            "account_id": 1
         }
     )
