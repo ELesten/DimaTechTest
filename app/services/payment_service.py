@@ -74,7 +74,9 @@ class PaymentService(AbstractPaymentService):
             except IntegrityError as e:
                 detail = "Payment has already been processed"
 
-                if "wallet" in str(e.orig):
+                if getattr(e.orig, "pgcode") == "23503":
+                    detail = f"User with id {user_id} does not exist"
+                elif "wallet" in str(e.orig):
                     detail = f"Wallet with id {account_id} has already been exists for another user"
 
                 raise CustomException(
